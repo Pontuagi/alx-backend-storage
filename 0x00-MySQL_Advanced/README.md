@@ -26,10 +26,10 @@ Write a SQL script that creates a table users following these requirements:
 Write a SQL script that creates a table users following these requirements:
 
 - With these attributes:
- - id, integer, never null, auto increment and primary key
- - email, string (255 characters), never null and unique
- - name, string (255 characters)
- - country, enumeration of countries: US, CO and TN, never null (= default will be the first element of the enumeration, here US)
+  - id, integer, never null, auto increment and primary key
+  - email, string (255 characters), never null and unique
+  - name, string (255 characters)
+  - country, enumeration of countries: US, CO and TN, never null (= default will be the first element of the enumeration, here US)
 - If the table already exists, your script should not fail
 - Your script can be executed on any database
 
@@ -76,8 +76,8 @@ Write a SQL script that creates a stored procedure AddBonus that adds a new corr
 Requirements:
 
 - Procedure AddBonus is taking 3 inputs (in this order):
- - user_id, a users.id value (you can assume user_id is linked to an existing users)
- - project_name, a new or already exists projects - if no projects.name found in the table, you should create it
+  - user_id, a users.id value (you can assume user_id is linked to an existing users)
+  - project_name, a new or already exists projects - if no projects.name found in the table, you should create it
  - score, the score value for the correction
 
 
@@ -88,7 +88,7 @@ Write a SQL script that creates a stored procedure ComputeAverageScoreForUser th
 Requirements:
 
 - Procedure ComputeAverageScoreForUser is taking 1 input:
- - user_id, a users.id value (you can assume user_id is linked to an existing users)
+  - user_id, a users.id value (you can assume user_id is linked to an existing users)
 
 
 ### 8-index_my_names.sql
@@ -119,8 +119,8 @@ Requirements:
 
 - You must create a function
 - The function SafeDiv takes 2 arguments:
- - a, INT
- - b, INT
+  - a, INT
+  - b, INT
 - And returns a / b or 0 if b == 0
 
 
@@ -131,6 +131,6 @@ Write a SQL script that creates a view need_meeting that lists all students that
 Requirements:
 
 - The view need_meeting should return all students name when:
- - They score are under (strict) to 80
- - AND no last_meeting date OR more than a month
+  - They score are under (strict) to 80
+  - AND no last_meeting date OR more than a month
 
