@@ -13,5 +13,6 @@ var database = db.getSiblingDB(dbName);
 var cursor = database.school.find({ "name": /^Holberton/i });
 
 while (cursor.hasNext()) {
-	printjson(cursor.next());
+	var doc = cursor.next();
+	print(doc._id);
 }
