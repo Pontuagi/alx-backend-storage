@@ -14,5 +14,5 @@ var cursor = database.school.find({ "name": /^Holberton/i });
 
 while (cursor.hasNext()) {
 	var doc = cursor.next();
-	print(`{"_id": ${doc._id}, "name": "${doc.name}" } `);
+	print(`{ "_id": ${doc._id}, "name": "${doc.name}" } `);
 }
