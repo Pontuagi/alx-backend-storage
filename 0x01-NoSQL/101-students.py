@@ -6,7 +6,7 @@ pymongo
 """
 
 
-def top_student(mongo_collection):
+def top_students(mongo_collection):
     """
     A function that returns all students sorted bu average score
 
