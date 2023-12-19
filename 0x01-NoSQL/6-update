@@ -9,7 +9,9 @@ if (typeof db === 'undefined') {
 var dbName = db.getName();
 var database = db.getSiblingDB(dbName);
 
-database.school.updateMany(
+var updateResult = database.school.updateMany(
 	{ "name": "Holberton school" },
 	{ $set: { "address": "972 Mission street" } }
 );
+
+print("WriteResult({ \"nMatched\" : ", updateResult.matchedCount, ", \"nUpserted\" : ", updateResult.upsertedCount, ", \"nModified\" : ", updateResult.modifiedCount, " })");
