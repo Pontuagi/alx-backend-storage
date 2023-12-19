@@ -1,0 +1,15 @@
+// A script that adds a new attribute to a document in collection school
+
+if (typeof db === 'undefined') {
+    print("Provide database Name!");
+    quit();
+}
+
+// Connect to database
+var dbName = db.getName();
+var database = db.getSiblingDB(dbName);
+
+database.school.updateMany(
+	{ "name": "Holberton school" },
+	{ $set: { "address": "972 Mission street" } }
+);
