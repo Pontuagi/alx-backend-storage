@@ -1,0 +1,12 @@
+// A script that deletes all documents with name="Holberton school" in the collection school\
+
+if (typeof db === 'undefined') {
+    print("Provide database Name!");
+    quit();
+}
+
+// Connect to database
+var dbName = db.getName();
+var database = db.getSiblingDB(dbName);
+
+database.school.deleteMany({ "name": "Holberton school" });
