@@ -1,0 +1,17 @@
+// A script that searches and lists documents with names starting
+// with "Holberton" in the collection "school"
+
+if (typeof db === 'undefined') {
+    print("Provide database Name!");
+    quit();
+}
+
+// Connect to the database
+var dbName = db.getName();
+var database = db.getSiblingDB(dbName);
+
+var cursor = database.school.find({ "name": /^Holberton/i });
+
+while (cursor.hasNext()) {
+	printjson(cursor.next());
+}
