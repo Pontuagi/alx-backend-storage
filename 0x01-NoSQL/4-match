@@ -1,0 +1,17 @@
+// script that lists all documents with name="Holberton school" in the collection school
+
+if (typeof db === 'undefined') {
+	print("Provide database Name!");
+	quit();
+}
+
+// Connect to database
+var dbName = db.getName();
+var database = db.getSiblingDB(dbName);
+
+// Find document where name="holberton school"
+var cursor = database.school.find({ "name": "Holberton school"});
+
+while (cursor.hasNext()) {
+	printjson(cursor.next());
+}
