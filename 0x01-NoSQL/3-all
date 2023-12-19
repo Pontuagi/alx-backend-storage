@@ -1,0 +1,14 @@
+// A script that lists all documents in the collection School
+
+if (typeof dbName === 'undefined') {
+	print("provide database Name");
+	quit();
+}
+
+var db = db.getSiblingDB(dbName);
+
+var cursor = db.school.find();
+
+while (cursor.hasNext()) {
+	printjson(cursor.next());
+}

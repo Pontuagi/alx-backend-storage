@@ -1,11 +1,11 @@
 // A script that inserts a document in the collection school
 
-if (typeof dbNamse === 'undefined') {
+if (typeof dbName === 'undefined') {
 	print("provide database name!");
 	quit();
 }
 
-// Coneect to database
+// Connect to database
 var db = db.getSiblingDB(dbName);
 
 // Insert document onto school collection
