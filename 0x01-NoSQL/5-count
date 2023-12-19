@@ -1,0 +1,14 @@
+// A script that displays the number of documents in the collection school
+if (typeof db === 'undefined') {
+    print("Provide database Name!");
+    quit();
+}
+
+// Connect to the database
+var dbName = db.getName();
+var database = db.getSiblingDB(dbName);
+
+// Get the count
+var count = database.school.count();
+
+print(count);
