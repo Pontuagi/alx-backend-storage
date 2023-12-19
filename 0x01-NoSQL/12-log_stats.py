@@ -37,4 +37,4 @@ def nginx_log_stats():
 
 
 if __name__ == "__main__":
-    nginx_logs_stats()
+    nginx_log_stats()
