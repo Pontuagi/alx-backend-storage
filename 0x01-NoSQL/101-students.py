@@ -13,15 +13,13 @@ def top_students(mongo_collection):
     mongo_collection: pymongo collection object
     """
     pipeline = [
-        {
-            "$project": {
-                "_id": 1,
-                "name": 1,
-                "scores": 1,
-                "averageScore": { "$avg": "$scores.score" }
-            }
-        },
-        { "$sort": { "averageScore": -1 } }
+        {"$unwind": "$topics"},
+        {"$group": {
+            "_id": "$_id",
+            "name": {"$first": "$name"},
+            "averageScore": {"$avg": "$topics.score"}
+        }},
+        {"$sort": {"averageScore": -1}}
     ]
 
     top_students = list(mongo_collection.aggregate(pipeline))
