@@ -29,6 +29,11 @@ def log_stats():
         count = collection.count_documents({"method": method})
         print(f"\tmethod {method}: {count}")
 
+    # specific query count
+    specific_query_count = collection.count_documents(
+        {"method": "GET", "path": "/status"})
+    print(f"{specific_query_count} status check")
+
     # Count IPs
     top_ips = collection.aggregate([
         {"$group": {"_id": "$ip", "count": {"$sum": 1}}},
