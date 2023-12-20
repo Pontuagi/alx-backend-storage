@@ -65,10 +65,7 @@ def call_history(method):
         Returns:
         - The result returned by the original method.
         """
-        func_name = method.__name__
-        module_name = inspect.getmodule(method).__name__
-        key = f"{module_name}:{func_name}"
-
+        key = method.__qualname__
         inputs_key = f"{key}:inputs"
         outputs_key = f"{key}:outputs"
 
