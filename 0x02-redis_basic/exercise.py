@@ -11,6 +11,35 @@ import functools
 from typing import Union
 
 
+def count_calls(method):
+    """
+    Decorator to count method calls and increment a counter in Redis.
+
+    Args:
+    - method: The method to be decorated.
+
+    Returns:
+    - wrapper: The wrapper function that increments the call count.
+    """
+    key = method.__qualname__
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """
+        Wrapper function to count method calls and invoke the original method.
+
+        Args:
+        - self: The instance of the class.
+        - *args: Positional arguments.
+        - **kwargs: Keyword arguments.
+
+        Returns:
+        - The result returned by the original method.
+        """
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+    return wrapper
+
+
 class Cache:
     """
     A class that defines methods for writing to redis
@@ -23,9 +52,9 @@ class Cache:
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ Method to generate a random key"""
         key = str(uuid.uuid4())
-        self._redis.set(key, data)
-
-        return key
+        if not self._redis.exists(key):
+                self._redis.set(key, data)
+                return key
 
     def get(self, key: str, fn=None):
         """ Method to retrieve data from Redis with optional conversion"""
@@ -46,35 +75,6 @@ class Cache:
     def get_int(self, key: str):
         """ Method to retrieve data from Redis and convert to integer"""
         return self.get(key, fn=int)
-
-
-def count_calls(method):
-    """
-    Decorator to count method calls and increment a counter in Redis.
-
-    Args:
-    - method: The method to be decorated.
-
-    Returns:
-    - wrapper: The wrapper function that increments the call count.
-    """
-    @functools.wraps(method)
-    def wrapper(self, *args, **kwargs):
-        """
-        Wrapper function to count method calls and invoke the original method.
-
-        Args:
-        - self: The instance of the class.
-        - *args: Positional arguments.
-        - **kwargs: Keyword arguments.
-
-        Returns:
-        - The result returned by the original method.
-        """
-        key = method.__qualname__
-        self._redis.incr(key)
-        return method(self, *args, **kwargs)
-    return wrapper
 
 
 def call_history(method):
