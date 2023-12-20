@@ -8,6 +8,7 @@ This module contains a class Cache for implementing Redis in python
 import redis
 import uuid
 import functools
+import inspect
 from typing import Union
 
 
@@ -22,6 +23,7 @@ def count_calls(method):
     - wrapper: The wrapper function that increments the call count.
     """
     key = method.__qualname__
+
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         """
@@ -38,43 +40,6 @@ def count_calls(method):
         self._redis.incr(key)
         return method(self, *args, **kwargs)
     return wrapper
-
-
-class Cache:
-    """
-    A class that defines methods for writing to redis
-    """
-    def __init__(self):
-        """ initializing the redis client """
-        self._redis = redis.Redis()
-        self._redis.flushdb()
-
-    def store(self, data: Union[str, bytes, int, float]) -> str:
-        """ Method to generate a random key"""
-        key = str(uuid.uuid4())
-        if not self._redis.exists(key):
-                self._redis.set(key, data)
-                return key
-
-    def get(self, key: str, fn=None):
-        """ Method to retrieve data from Redis with optional conversion"""
-        data = self._redis.get(key)
-
-        if data is None:
-            return None
-
-        if fn is not None:
-            return fn(data)
-
-        return data
-
-    def get_str(self, key: str):
-        """ Method to retrieve data from Redis and convert to string"""
-        return self.get(key, fn=lambda d: d.decode("utf-8") if d else None)
-
-    def get_int(self, key: str):
-        """ Method to retrieve data from Redis and convert to integer"""
-        return self.get(key, fn=int)
 
 
 def call_history(method):
@@ -100,7 +65,10 @@ def call_history(method):
         Returns:
         - The result returned by the original method.
         """
-        key = method.__qualname__
+        func_name = method.__name__
+        module_name = inspect.getmodule(method).__name__
+        key = f"{module_name}:{func_name}"
+
         inputs_key = f"{key}:inputs"
         outputs_key = f"{key}:outputs"
 
@@ -115,6 +83,43 @@ def call_history(method):
 
         return output
     return wrapper
+
+
+class Cache:
+    """
+    A class that defines methods for writing to redis
+    """
+    def __init__(self):
+        """ initializing the redis client """
+        self._redis = redis.Redis()
+        self._redis.flushdb()
+
+    def store(self, data: Union[str, bytes, int, float]) -> str:
+        """ Method to generate a random key"""
+        key = str(uuid.uuid4())
+        if not self._redis.exists(key):
+            self._redis.set(key, data)
+            return key
+
+    def get(self, key: str, fn=None):
+        """ Method to retrieve data from Redis with optional conversion"""
+        data = self._redis.get(key)
+
+        if data is None:
+            return None
+
+        if fn is not None:
+            return fn(data)
+
+        return data
+
+    def get_str(self, key: str):
+        """ Method to retrieve data from Redis and convert to string"""
+        return self.get(key, fn=lambda d: d.decode("utf-8") if d else None)
+
+    def get_int(self, key: str):
+        """ Method to retrieve data from Redis and convert to integer"""
+        return self.get(key, fn=int)
 
 
 def replay(redis_instance, method):
