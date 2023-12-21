@@ -2,12 +2,13 @@
 
 import requests
 import redis
+from typing import Callable
 from functools import wraps
 
 redis_client = redis.Redis()
 
 
-def count_calls(fn):
+def count_calls(fn: Callable) -> Callable:
     """
     Decorator to count method calls and increment a counter in Redis.
 
