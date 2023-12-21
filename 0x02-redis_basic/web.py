@@ -2,10 +2,12 @@
 
 import requests
 import redis
-import functools
+from functools import wraps
+
+redis_client = redis.Redis()
 
 
-def count_calls(method):
+def count_calls(fn):
     """
     Decorator to count method calls and increment a counter in Redis.
 
@@ -15,24 +17,34 @@ def count_calls(method):
     Returns:
     - wrapper: The wrapper function that increments the call count.
     """
-    @functools.wraps(method)
-    def wrapper(*args, **kwargs):
+    @wraps(fn)
+    def wrapper(url):
         """
-        Wrapper function to count method calls and invoke the original method.
+        Wrapper function that caches HTTP requests and counts URL accesses.
 
         Args:
-        - *args: Positional arguments.
-        - **kwargs: Keyword arguments.
+        - url: The URL to be accessed.
 
         Returns:
-        - The result returned by the original method.
+        - str: The response content from the URL if successful, an empty
+        string otherwise.
         """
-        url = args[0]
         count_key = f"count:{url}"
-        r = redis.Redis()
-        r.incr(count_key)
-        r.expire(count_key, 10)  # Set expiration time of 10 seconds for count
-        return method(*args, **kwargs)
+        redis_client.incr(count_key)
+        redis_client.expire(count_key, 10)
+
+        cached_response = redis_client.get(f"cached:{url}")
+        if cached_response:
+            return cached_response.decode('utf-8')
+
+        try:
+            result = fn(url)
+            redis_client.setex(f"cached:{url}", 10, result)
+            return result
+        except requests.RequestException as e:
+            print(f"Error fetching URL {url}: {e}")
+            return ""
+
     return wrapper
 
 
